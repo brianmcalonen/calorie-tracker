@@ -15,15 +15,15 @@ const ItemCtrl = (function () {
     // Data Structure || State
     const data = {
         items: [
-            { id: 0, name: "Veggie Lasagna", calories: 1200 },
-            { id: 1, name: "Eggs Benedict", calories: 700 },
-            { id: 2, name: "Tuna Tartar", calories: 450 }
+            // { id: 0, name: "Veggie Lasagna", calories: 1200 },
+            // { id: 1, name: "Eggs Benedict", calories: 700 },
+            // { id: 2, name: "Tuna Tartar", calories: 450 }
         ],
         currentItem: null,
         totalCalories: 0
     }
 
-    // Return data to make it public
+    // Public Methods
     return {
         getItems: function () {
             return data.items;
@@ -46,6 +46,7 @@ const ItemCtrl = (function () {
             // Add new item to array
             data.items.push(newItem);
 
+            return newItem;
         },
         logData: function () {
             return data;
@@ -83,6 +84,23 @@ const UICtrl = (function () {
 
             document.querySelector(UISelectors.itemList).innerHTML = html;
         },
+        addListItem: function (item) {
+            // Create li element
+            const li = document.createElement('li');
+            // Add class
+            li.className = "collection-item";
+            // Add ID
+            li.id = `item-${item.id}`;
+            // Add HTML
+            li.innerHTML = `                    <strong>${item.name}: </strong> 
+            <em>${item.calories} Calories</em>
+            <a href="#" class="secondary-content">
+            <i class="edit-item fa fa-pencil"></i>
+            </a>`
+            // Insert item
+            document.querySelector(UISelectors.itemList).insertAdjacentElement("beforeend", li);
+
+        },
         getItemInput: function () {
             return {
                 name: document.querySelector(UISelectors.itemNameInput).value,
@@ -91,7 +109,12 @@ const UICtrl = (function () {
         },
         getSelectors: function () {
             return UISelectors;
+        },
+        clearFields: function () {
+            document.querySelector(UISelectors.itemNameInput).value = "";
+            document.querySelector(UISelectors.itemCaloriesInput).value = "";
         }
+
     }
 })();
 
@@ -117,7 +140,14 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
         // Check for name and calories input
         if (input.name !== "" && input.calories !== "") {
             // Add item
-            const newItem = ItemCtrl.addItem(input.name, input.calories)
+            const newItem = ItemCtrl.addItem(input.name, input.calories);
+
+            // Add item to UI List
+            UICtrl.addListItem(newItem);
+
+            // Clear fields
+            UICtrl.clearFields()
+
         }
 
         e.preventDefault()
