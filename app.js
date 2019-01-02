@@ -28,6 +28,25 @@ const ItemCtrl = (function () {
         getItems: function () {
             return data.items;
         },
+        addItem: function (name, calories) {
+            let ID;
+            // Create ID
+            if (data.items.length > 0) {
+                ID = data.items[data.items.length - 1].id + 1;
+            } else {
+                ID = 0;
+            }
+
+            // Calories from string to number
+            calories = parseInt(calories);
+
+            // Create new item
+            newItem = new Item(ID, name, calories);
+
+            // Add new item to array
+            data.items.push(newItem);
+
+        },
         logData: function () {
             return data;
         }
@@ -41,7 +60,9 @@ const UICtrl = (function () {
     // UI Selectors
     const UISelectors = {
         itemList: "#item-list",
-        addBtn: ".add-btn"
+        addBtn: ".add-btn",
+        itemNameInput: "#item-name",
+        itemCaloriesInput: "#item-calories"
     }
 
     // Public Methods
@@ -52,7 +73,8 @@ const UICtrl = (function () {
             items.forEach(function (item) {
                 html += `            
                 <li class="collection-item" id="item-${item.id}">
-                    <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
+                    <strong>${item.name}: </strong> 
+                    <em>${item.calories} Calories</em>
                     <a href="#" class="secondary-content">
                     <i class="edit-item fa fa-pencil"></i>
                     </a>
@@ -60,6 +82,12 @@ const UICtrl = (function () {
             });
 
             document.querySelector(UISelectors.itemList).innerHTML = html;
+        },
+        getItemInput: function () {
+            return {
+                name: document.querySelector(UISelectors.itemNameInput).value,
+                calories: document.querySelector(UISelectors.itemCaloriesInput).value
+            }
         },
         getSelectors: function () {
             return UISelectors;
@@ -71,10 +99,8 @@ const UICtrl = (function () {
 // APP CONTROLLER
 
 const AppCtrl = (function (ItemCtrl, UICtrl) {
-
     // Load Event Listeners
     const loadEventListeners = function () {
-
         // Get UI selectors
         const UISelectors = UICtrl.getSelectors();
 
@@ -85,7 +111,14 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
 
     // Add item submit
     const itemAddSubmit = function (e) {
-        console.log('Add');
+        // Get form input from UI Controller
+        const input = UICtrl.getItemInput();
+
+        // Check for name and calories input
+        if (input.name !== "" && input.calories !== "") {
+            // Add item
+            const newItem = ItemCtrl.addItem(input.name, input.calories)
+        }
 
         e.preventDefault()
     }
