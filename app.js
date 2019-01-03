@@ -50,6 +50,20 @@ const ItemCtrl = (function () {
         },
         logData: function () {
             return data;
+        },
+        getTotalCalories: function () {
+            let total = 0;
+
+            // Loop through items and add calories
+            data.items.forEach(function (item) {
+                total += item.calories
+            });
+
+            // Set total calories in data
+            data.totalCalories = total;
+
+            // Return total
+            return data.totalCalories;
         }
     }
 })();
@@ -63,7 +77,8 @@ const UICtrl = (function () {
         itemList: "#item-list",
         addBtn: ".add-btn",
         itemNameInput: "#item-name",
-        itemCaloriesInput: "#item-calories"
+        itemCaloriesInput: "#item-calories",
+        totalCalories: ".total-calories"
     }
 
     // Public Methods
@@ -110,6 +125,9 @@ const UICtrl = (function () {
         getSelectors: function () {
             return UISelectors;
         },
+        showTotalCalories: function (totalCalories) {
+            document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
+        },
         clearFields: function () {
             document.querySelector(UISelectors.itemNameInput).value = "";
             document.querySelector(UISelectors.itemCaloriesInput).value = "";
@@ -145,6 +163,12 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
             // Add item to UI List
             UICtrl.addListItem(newItem);
 
+            // Get total calories
+            const totalCalories = ItemCtrl.getTotalCalories();
+
+            // Add total calories to UI
+            UICtrl.showTotalCalories(totalCalories);
+
             // Clear fields
             UICtrl.clearFields()
 
@@ -161,6 +185,12 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
 
             // Populate list with items
             UICtrl.populateItemList(items);
+
+            // Get total calories
+            const totalCalories = ItemCtrl.getTotalCalories();
+
+            // Add total calories to UI
+            UICtrl.showTotalCalories(totalCalories);
 
             // Load event listeners
             loadEventListeners()
