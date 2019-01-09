@@ -35,7 +35,42 @@ const StorageCtrl = (function () {
             } else {
                 items = JSON.parse(localStorage.getItem("items"))
             }
+
             return items;
+        },
+        updateItemStorage: function (updatedItem) {
+            // Get items from localStorage            
+            let items = JSON.parse(localStorage.getItem("items"));
+
+            items.forEach(function (item, index) {
+                if (updatedItem.id === item.id) {
+                    // Remove that item & replace with updated item
+                    items.splice(index, 1, updatedItem);
+
+                }
+            });
+
+            // Reset localStorage
+            localStorage.setItem('items', JSON.stringify(items));
+        },
+        deleteItemFromStorage: function (id) {
+            // Get items from localStorage
+            let items = JSON.parse(localStorage.getItem("items"));
+
+            items.forEach(function (item, index) {
+                if (id === item.id) {
+                    // Remove that item
+                    items.splice(index, 1);
+
+                }
+            });
+
+            // Reset localStorage
+            localStorage.setItem('items', JSON.stringify(items));
+
+        },
+        clearItemsFromStorage: function () {
+            localStorage.removeItem('items');
         }
     }
 })();
